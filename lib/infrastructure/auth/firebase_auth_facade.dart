@@ -3,11 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:injectable/injectable.dart';
 import 'package:notes_firebase_ddd/domain/auth/auth_failure.dart';
 import 'package:notes_firebase_ddd/domain/auth/i_auth_facade.dart';
 import 'package:notes_firebase_ddd/domain/auth/value_objects.dart';
-import 'package:notes_firebase_ddd/domain/core/errors.dart';
 
+@LazySingleton(as: IAuthFacade)
 class FirebaseAuthFacade implements IAuthFacade {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
@@ -75,8 +76,7 @@ class FirebaseAuthFacade implements IAuthFacade {
 
       return _firebaseAuth
           .signInWithCredential(authCredential)
-          .then((r) => right(unit))
-          .catchError((e) => left(const AuthFailure.serverError()));
+          .then((r) => right(unit));
     } on PlatformException catch (_) {
       return left(const AuthFailure.serverError());
     }
