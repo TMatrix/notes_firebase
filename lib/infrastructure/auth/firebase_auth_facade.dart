@@ -18,8 +18,11 @@ class FirebaseAuthFacade implements IAuthFacade {
   FirebaseAuthFacade(this._firebaseAuth, this._googleSignIn);
 
   @override
-  Future<Option<User>> getSignedInUser() => Future.value(
-      some(User(id: UniqueId.fromUniqueString(_firebaseAuth.currentUser.uid))));
+  Future<Option<User>> getSignedInUser() =>
+      Future.value(_firebaseAuth.currentUser).then((firebaseUser) => optionOf(
+          firebaseUser != null
+              ? User(id: UniqueId.fromUniqueString(firebaseUser.uid))
+              : null));
 
   @override
   Future<Either<AuthFailure, Unit>> registerWithEmailAndPassword({
